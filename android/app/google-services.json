@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "450073047551",
+    "firebase_url": "https://chat-app-6b555.firebaseio.com",
+    "project_id": "chat-app-6b555",
+    "storage_bucket": "chat-app-6b555.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450073047551:android:987829366bfb12c26277ca",
+        "android_client_info": {
+          "package_name": "com.caretech.firebase_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450073047551-m5h76kc7s9qk64jqekla3uferi2tou6v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.caretech.firebase_chat",
+            "certificate_hash": "689f9172524fe10817f89f7709e95188dcd4b25a"
+          }
+        },
+        {
+          "client_id": "450073047551-vm6aj751b77360r464g71f0d0mldj7cd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMMne8Kn4TbVOEcsi9fUU6p5zu2BGTSCM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450073047551-vm6aj751b77360r464g71f0d0mldj7cd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

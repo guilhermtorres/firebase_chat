@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'src/views/home_views.dart';
 
 class FirebaseChatApp extends StatelessWidget {
