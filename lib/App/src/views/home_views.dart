@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_chat/App/src/components/chat_message_components.dart';
 import 'package:firebase_chat/App/src/components/text_composer_components.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,9 @@ class _HomeViewsState extends State<HomeViews> {
   void initState() {
     super.initState();
     FirebaseAuth.instance.onAuthStateChanged.listen((user) {
-      _currentUser = user;
+      setState(() {
+        _currentUser = user;
+      });
     });
   }
 
@@ -37,6 +40,7 @@ class _HomeViewsState extends State<HomeViews> {
       );
       final AuthResult authResult = await FirebaseAuth.instance.signInWithCredential(credential);
       final FirebaseUser user = authResult.user;
+
       return user;
     } catch (error) {
       return null;
@@ -61,6 +65,7 @@ class _HomeViewsState extends State<HomeViews> {
       'senderName': user.displayName,
       'senderPhotoUrl': user.photoUrl,
     };
+
     if (imgFile != null) {
       StorageUploadTask task = FirebaseStorage.instance
           .ref()
@@ -87,7 +92,9 @@ class _HomeViewsState extends State<HomeViews> {
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Chat App'),
+        title: Text(
+          _currentUser != null ? 'Olá,  ${_currentUser.displayName}' : 'Chat App',
+        ),
       ),
       body: Column(
         children: <Widget>[
@@ -107,11 +114,7 @@ class _HomeViewsState extends State<HomeViews> {
                       itemCount: documents.length,
                       reverse: true,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(
-                            documents[index].data['text'],
-                          ),
-                        );
+                        return ChatMessage(documents[index].data, true);
                       },
                     );
                 }
