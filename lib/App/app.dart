@@ -32,7 +32,7 @@ class FirebaseChatApp extends StatelessWidget {
         appBarTheme: AppBarTheme(
           elevation: 5,
           color: Colors.blue[700],
-          iconTheme: IconThemeData(color: Colors.blue),
+          iconTheme: IconThemeData(color: Colors.white),
           textTheme: TextTheme(
             headline6: TextStyle(
               fontFamily: '',

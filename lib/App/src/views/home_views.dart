@@ -16,6 +16,7 @@ class _HomeViewsState extends State<HomeViews> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   FirebaseUser _currentUser;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -72,6 +73,7 @@ class _HomeViewsState extends State<HomeViews> {
         'uid': user.uid,
         'senderName': user.displayName,
         'senderPhotoUrl': user.photoUrl,
+        'time': Timestamp.now(),
       };
 
       if (imgFile != null) {
@@ -81,14 +83,20 @@ class _HomeViewsState extends State<HomeViews> {
               'Images',
             )
             .child(
-              DateTime.now().millisecondsSinceEpoch.toString(),
+              user.uid + DateTime.now().millisecondsSinceEpoch.toString(),
             )
             .putFile(
               imgFile,
             );
+        setState(() {
+          _isLoading = true;
+        });
         StorageTaskSnapshot taskSnapshot = await task.onComplete;
         String url = await taskSnapshot.ref.getDownloadURL();
         data['imgUrl'] = url;
+        setState(() {
+          _isLoading = false;
+        });
       }
       if (text != null) data['text'] = text;
       Firestore.instance.collection('messages').add(data);
@@ -103,13 +111,37 @@ class _HomeViewsState extends State<HomeViews> {
         centerTitle: true,
         title: Text(
           _currentUser != null ? 'Olá,  ${_currentUser.displayName}' : 'Chat App',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 17,
+          ),
         ),
+        elevation: 5,
+        actions: <Widget>[
+          _currentUser != null
+              ? IconButton(
+                  icon: Icon(Icons.exit_to_app),
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    googleSignIn.signOut();
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      content: Text(
+                        'Você saiu com sucesso!',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      backgroundColor: Colors.green,
+                    ));
+                  },
+                )
+              : Container()
+        ],
       ),
       body: Column(
         children: <Widget>[
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: Firestore.instance.collection('messages').snapshots(),
+              stream: Firestore.instance.collection('messages').orderBy('time').snapshots(),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
@@ -123,13 +155,14 @@ class _HomeViewsState extends State<HomeViews> {
                       itemCount: documents.length,
                       reverse: true,
                       itemBuilder: (context, index) {
-                        return ChatMessage(documents[index].data, true);
+                        return ChatMessage(documents[index].data, documents[index].data['uid'] == _currentUser?.uid);
                       },
                     );
                 }
               },
             ),
           ),
+          _isLoading ? LinearProgressIndicator() : Container(),
           TextComposer(
             _sendMessage,
           ),
