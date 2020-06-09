@@ -8,13 +8,13 @@ class FirebaseChatApp extends StatelessWidget {
       home: HomeViews(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        cursorColor: Colors.brown,
-        buttonColor: Colors.brown,
-        indicatorColor: Colors.brown,
+        cursorColor: Colors.blue,
+        buttonColor: Colors.blue,
+        indicatorColor: Colors.blue,
         accentColor: Colors.grey[600],
-        hintColor: Colors.brown,
-        primarySwatch: Colors.brown,
-        primaryColor: Colors.brown,
+        hintColor: Colors.blue,
+        primarySwatch: Colors.blue,
+        primaryColor: Colors.blue,
         fontFamily: '',
         canvasColor: Colors.yellow[50],
         textTheme: TextTheme(
@@ -31,7 +31,7 @@ class FirebaseChatApp extends StatelessWidget {
         ),
         appBarTheme: AppBarTheme(
           elevation: 5,
-          color: Colors.brown[700],
+          color: Colors.blue[700],
           iconTheme: IconThemeData(color: Colors.grey),
           textTheme: TextTheme(
             headline6: TextStyle(
