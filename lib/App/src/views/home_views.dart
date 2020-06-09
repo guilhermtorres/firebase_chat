@@ -20,6 +20,7 @@ class _HomeViewsState extends State<HomeViews> {
   @override
   void initState() {
     super.initState();
+    _getUser();
     FirebaseAuth.instance.onAuthStateChanged.listen((user) {
       setState(() {
         _currentUser = user;
@@ -27,28 +28,36 @@ class _HomeViewsState extends State<HomeViews> {
     });
   }
 
+  teste() async {
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    print(googleSignInAccount.email);
+  }
+
   Future<FirebaseUser> _getUser() async {
-    if (_currentUser != null) return _currentUser;
+    if (_currentUser != null)
+      return _currentUser;
+    else
+      try {
+        final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
 
-    try {
-      final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+        final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
 
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.accessToken,
-      );
-      final AuthResult authResult = await FirebaseAuth.instance.signInWithCredential(credential);
-      final FirebaseUser user = authResult.user;
+        final AuthCredential credential = GoogleAuthProvider.getCredential(
+          accessToken: googleSignInAuthentication.accessToken,
+          idToken: googleSignInAuthentication.idToken,
+        );
+        final AuthResult authResult = await FirebaseAuth.instance.signInWithCredential(credential);
+        final FirebaseUser user = authResult.user;
 
-      return user;
-    } catch (error) {
-      return null;
-    }
+        return user;
+      } catch (error) {
+        return null;
+      }
   }
 
   void _sendMessage({String text, File imgFile}) async {
     final FirebaseUser user = await _getUser();
+    print(user == null);
     if (user == null) {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -58,32 +67,32 @@ class _HomeViewsState extends State<HomeViews> {
           backgroundColor: Colors.red,
         ),
       );
-    }
+    } else {
+      Map<String, dynamic> data = {
+        'uid': user.uid,
+        'senderName': user.displayName,
+        'senderPhotoUrl': user.photoUrl,
+      };
 
-    Map<String, dynamic> data = {
-      'uid': user.uid,
-      'senderName': user.displayName,
-      'senderPhotoUrl': user.photoUrl,
-    };
-
-    if (imgFile != null) {
-      StorageUploadTask task = FirebaseStorage.instance
-          .ref()
-          .child(
-            'Images',
-          )
-          .child(
-            DateTime.now().millisecondsSinceEpoch.toString(),
-          )
-          .putFile(
-            imgFile,
-          );
-      StorageTaskSnapshot taskSnapshot = await task.onComplete;
-      String url = await taskSnapshot.ref.getDownloadURL();
-      data['imgUrl'] = url;
+      if (imgFile != null) {
+        StorageUploadTask task = FirebaseStorage.instance
+            .ref()
+            .child(
+              'Images',
+            )
+            .child(
+              DateTime.now().millisecondsSinceEpoch.toString(),
+            )
+            .putFile(
+              imgFile,
+            );
+        StorageTaskSnapshot taskSnapshot = await task.onComplete;
+        String url = await taskSnapshot.ref.getDownloadURL();
+        data['imgUrl'] = url;
+      }
+      if (text != null) data['text'] = text;
+      Firestore.instance.collection('messages').add(data);
     }
-    if (text != null) data['text'] = text;
-    Firestore.instance.collection('messages').add(data);
   }
 
   @override
