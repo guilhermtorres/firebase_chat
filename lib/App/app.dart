@@ -12,7 +12,7 @@ class FirebaseChatApp extends StatelessWidget {
         buttonColor: Colors.blue,
         indicatorColor: Colors.blue,
         accentColor: Colors.grey[600],
-        hintColor: Colors.blue,
+        hintColor: Colors.black26,
         primarySwatch: Colors.blue,
         primaryColor: Colors.blue,
         fontFamily: '',
@@ -32,7 +32,7 @@ class FirebaseChatApp extends StatelessWidget {
         appBarTheme: AppBarTheme(
           elevation: 5,
           color: Colors.blue[700],
-          iconTheme: IconThemeData(color: Colors.grey),
+          iconTheme: IconThemeData(color: Colors.blue),
           textTheme: TextTheme(
             headline6: TextStyle(
               fontFamily: '',
